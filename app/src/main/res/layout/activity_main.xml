@@ -24,36 +24,26 @@
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5sp">
+    android:padding="0sp">
 
-    <Button
-        android:id="@+id/sendButton"
-        android:layout_width="wrap_content"
+    <android.inputmethodservice.KeyboardView
+        android:id="@+id/keyboardview"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:drawablePadding="5sp"
-        android:onClick="sendMessage"
-        android:text="@string/string_send"
-        android:textSize="18sp" />
-
-    <Button
-        android:id="@+id/resetButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@id/sendButton"
-        android:drawablePadding="5sp"
-        android:onClick="resetFields"
-        android:text="@string/string_reset"
-        android:textSize="18sp" />
+        android:layout_centerHorizontal="true"
+        android:background="#303030"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone" />
 
     <ScrollView
         android:id="@+id/contentPanel"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/sendButton"
-        android:layout_alignParentTop="true">
+        android:layout_above="@id/keyboardview"
+        android:layout_alignParentTop="true"
+        android:padding="5sp" >
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -322,6 +312,36 @@
                     tools:ignore="HardcodedText,LabelFor,RtlCompat" />
 
             </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/resetButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="5sp"
+                android:onClick="resetFields"
+                android:text="@string/string_reset"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/sendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="5sp"
+                android:onClick="sendMessage"
+                android:text="@string/string_send"
+                android:textSize="18sp" />
+
+        </LinearLayout>
 
         </LinearLayout>
 

@@ -19,9 +19,13 @@
 
 package com.github.siggel.coordinatejoker;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.KeyboardView;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -29,11 +33,16 @@ import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
+import android.text.Editable;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -51,6 +60,20 @@ public class MainActivity extends AppCompatActivity {
      * model holding all values of the ui
      */
     private MainModel mainModel;
+
+    private Keyboard keyboardCoordinates;
+    private Keyboard keyboardRanges;
+    private KeyboardView keyboardView;
+
+    public final static int CodeDelete   = -5; // Keyboard.KEYCODE_DELETE
+    public final static int CodeCancel   = -3; // Keyboard.KEYCODE_CANCEL
+    public final static int CodePrev     = 55000;
+    public final static int CodeAllLeft  = 55001;
+    public final static int CodeLeft     = 55002;
+    public final static int CodeRight    = 55003;
+    public final static int CodeAllRight = 55004;
+    public final static int CodeNext     = 55005;
+    public final static int CodeClear    = 55006;
 
     /**
      * constructor
@@ -119,6 +142,172 @@ public class MainActivity extends AppCompatActivity {
 
             // we may display change notes here later
         }
+
+
+        KeyboardView.OnKeyboardActionListener mOnKeyboardActionListener = new KeyboardView.OnKeyboardActionListener() {
+            @Override public void onKey(int primaryCode, int[] keyCodes)
+            {
+                // Get the EditText and its Editable
+                View focusCurrent = MainActivity.this.getWindow().getCurrentFocus();
+                if( focusCurrent==null /*|| focusCurrent.getClass()!=EditText.class*/ ) {
+                    return;
+                }
+                EditText edittext = (EditText) focusCurrent;
+                Editable editable = edittext.getText();
+                int start = edittext.getSelectionStart();
+                // Handle key
+                if( primaryCode==CodeCancel ) {
+                    closeKeyboard();
+                } else if( primaryCode==CodeDelete ) {
+                    if( editable!=null && start>0 ) editable.delete(start - 1, start);
+                } else if( primaryCode==CodeClear ) {
+                    if( editable!=null ) editable.clear();
+                } else if( primaryCode==CodeLeft ) {
+                    if( start>0 ) edittext.setSelection(start - 1);
+                } else if( primaryCode==CodeRight ) {
+                    if (start < edittext.length()) edittext.setSelection(start + 1);
+                } else if( primaryCode==CodeAllLeft ) {
+                    edittext.setSelection(0);
+                } else if( primaryCode==CodeAllRight ) {
+                    edittext.setSelection(edittext.length());
+                } else if( primaryCode==CodePrev ) {
+                    @SuppressLint("WrongConstant") View focusNew= edittext.focusSearch(View.FOCUS_BACKWARD);
+                    if( focusNew!=null ) focusNew.requestFocus();
+                } else if( primaryCode==CodeNext ) {
+                    @SuppressLint("WrongConstant") View focusNew= edittext.focusSearch(View.FOCUS_FORWARD);
+                    if( focusNew!=null ) focusNew.requestFocus();
+                }  else {// Insert character
+                    editable.insert(start, Character.toString((char) primaryCode));
+                }
+            }
+
+            @Override public void onPress(int arg0) {
+            }
+
+            @Override public void onRelease(int primaryCode) {
+            }
+
+            @Override public void onText(CharSequence text) {
+            }
+
+            @Override public void swipeDown() {
+                closeKeyboard();
+            }
+
+            @Override public void swipeLeft() {
+            }
+
+            @Override public void swipeRight() {
+            }
+
+            @Override public void swipeUp() {
+            }
+        };
+
+        // Create the Keyboard
+        keyboardCoordinates = new Keyboard(this,R.xml.keyboard_coordinates);
+        keyboardRanges = new Keyboard(this,R.xml.keyboard_ranges);
+
+        // Lookup the KeyboardView
+        keyboardView = findViewById(R.id.keyboardview);
+
+        // Attach the keyboard_coordinates to the view
+        keyboardView.setKeyboard(keyboardCoordinates);
+
+        // Do not show the preview balloons
+        //keyboardView.setPreviewEnabled(false);
+
+        // Install the key handler
+        keyboardView.setOnKeyboardActionListener(mOnKeyboardActionListener);
+
+        // Hide the standard keyboard_coordinates initially
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        // Make the custom keyboard_coordinates appear
+        registerEditText(R.id.degreesNorthFormula, keyboardCoordinates);
+        registerEditText(R.id.minutesNorthFormula, keyboardCoordinates);
+        registerEditText(R.id.degreesEastFormula, keyboardCoordinates);
+        registerEditText(R.id.minutesEastFormula, keyboardCoordinates);
+        registerEditText(R.id.distanceFormula, keyboardCoordinates);
+        registerEditText(R.id.azimuthFormula, keyboardCoordinates);
+        registerEditText(R.id.xValues, keyboardRanges);
+        registerEditText(R.id.yValues, keyboardRanges);
+    }
+
+    /*private void installKeyboard(int id) {
+        findViewById(id).setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View v, boolean hasFocus) {
+                if( hasFocus ) openKeyboard(v); else closeKeyboard();
+            }
+        });
+        findViewById(id).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                openKeyboard(v);
+            }
+        });
+    }*/
+
+    public void registerEditText(int resid, final Keyboard keyboard) {
+        // Find the EditText 'resid'
+        EditText edittext= (EditText)findViewById(resid);
+        // Make the custom keyboard_coordinates appear
+        edittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View v, boolean hasFocus) {
+                if( hasFocus ) {
+                    openKeyboard(v, keyboard);
+                } else {
+                    closeKeyboard();
+                }
+            }
+        });
+        edittext.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                openKeyboard(v, keyboard);
+            }
+        });
+        // Disable standard keyboard_coordinates hard way
+        edittext.setOnTouchListener(new View.OnTouchListener() {
+            @Override public boolean onTouch(View v, MotionEvent event) {
+                EditText edittext = (EditText) v;
+                int inType = edittext.getInputType();       // Backup the input type
+                edittext.setInputType(InputType.TYPE_NULL); // Disable standard keyboard_coordinates
+                edittext.onTouchEvent(event);               // Call native handler
+                edittext.setInputType(inType);              // Restore input type
+                return true; // Consume touch event
+            }
+        });
+        // Disable spell check (hex strings look like words to Android)
+        edittext.setInputType( edittext.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS );
+    }
+
+    public void openKeyboard(final View v, Keyboard keyboard)
+    {
+        keyboardView.setKeyboard(keyboard);
+        keyboardView.setVisibility(View.VISIBLE);
+        keyboardView.setEnabled(true);
+        if( v!=null){
+            ((InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
+/*            v.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    InputMethodManager keyboard_coordinates = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    keyboard_coordinates.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            },50);*/
+        }
+    }
+
+    public void closeKeyboard() {
+        keyboardView.setVisibility(View.GONE);
+        keyboardView.setEnabled(false);
+    }
+
+    public boolean isKeyboardVisible() {
+        return keyboardView.getVisibility() == View.VISIBLE;
+    }
+
+    @Override public void onBackPressed() {
+        if( isKeyboardVisible() ) closeKeyboard(); else this.finish();
     }
 
     /**
