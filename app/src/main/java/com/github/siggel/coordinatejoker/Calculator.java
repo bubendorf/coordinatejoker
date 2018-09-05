@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 by siggel <siggel-apps@gmx.de>
+ * Copyright (c) 2018 by siggel <siggel-apps@gmx.de> and bubendorf <markus@bubendorf.ch>
  *
  *     This file is part of Coordinate Joker.
  *
@@ -35,14 +35,12 @@ class Calculator {
     /**
      * constant for meter to feet conversion
      */
-    final private static double meterPerFeet = 0.3048;
-
+    private static final double meterPerFeet = 0.3048;
+    private static final DecimalFormat df = new DecimalFormat("0.##");
     /**
      * the formula mainModel
      */
     private final MainModel mainModel;
-
-
     /**
      * the app's main context (for accessing resource strings)
      */
@@ -60,6 +58,95 @@ class Calculator {
     }
 
     /**
+     * Evaluates a 'geocaching-mathematical' formula
+     *
+     * @param formula the coordinate formula
+     * @param x       value to enter for x
+     * @param y       value to enter for y
+     * @return calculated result
+     */
+    static double evaluate(String formula, Integer x, Integer y) {
+        // Check if there are any parenthesis. If so then evaluate it first and
+        // replace it with the value.
+        formula = formula.replace(" ", "");
+        int openIndex = findOpeningParenthesis(formula);
+        int closeIndex = findCosingParenthesis(formula, openIndex);
+        while (openIndex != -1 && closeIndex != -1 && openIndex < closeIndex) {
+            // Evaluate the expression within the parenthesis and replace the
+            // parenthesis-expression with the result. Repeat this until
+            // there are no more parenthesis.
+            String subFormula = formula.substring(openIndex + 1, closeIndex);
+            double value = evaluate(subFormula, x, y);
+            String replacement = df.format(value);
+            formula = formula.substring(0, openIndex) + replacement + formula.substring(closeIndex + 1);
+            openIndex = findOpeningParenthesis(formula);
+            closeIndex = findCosingParenthesis(formula, openIndex);
+        }
+
+        // for non-negative x and y do simple replacement so we support formulas like 12.34x,
+        // but don't replace "exp" as it serves as exponential function
+        final String xString = "" + x;
+        formula = formula.replaceAll("(?<!e)x(?!p)", xString);
+        final String yString = "" + y;
+        formula = formula.replace("y", yString);
+
+        return new ExpressionBuilder(formula)
+                .variables("x", "y")
+                .build()
+                .setVariable("x", x)
+                .setVariable("y", y)
+                .evaluate();
+    }
+
+    private static int findOpeningParenthesis(final String text) {
+        return findOpeningParenthesis(text, 0);
+    }
+
+    private static int findOpeningParenthesis(final String text, int startIndex) {
+        int index = text.indexOf('(', startIndex);
+        if (index == -1) {
+            return -1;
+        }
+
+        // Do not use the parenthesis if it is preceded by a character a-w
+        // Most likely this parenthesis is used for a function call.
+        if (index > 0) {
+            char charBefore = text.charAt(index - 1);
+            if (charBefore >= 'a' && charBefore <= 'w') {
+                return findOpeningParenthesis(text, index + 1);
+            }
+        }
+        return index;
+    }
+
+    /**
+     * Search the matching closing parenthesis given a text and the position of the
+     * opening parenthesis.
+     *
+     * @param text                   The text
+     * @param indexOfOpenParenthesis The index of the opening parenthesis
+     * @return The index within text of the matching closing parenthesis or -1 if there is
+     * no such closing parenthesis.
+     */
+    private static int findCosingParenthesis(final String text, final int indexOfOpenParenthesis) {
+        if (indexOfOpenParenthesis == -1) {
+            return -1;
+        }
+        int index = indexOfOpenParenthesis + 1;
+        int numberOpens = 1;
+        while (index < text.length() && numberOpens > 0) {
+            char nextChar = text.charAt(index);
+            if (nextChar == '(') {
+                numberOpens++;
+            } else if (nextChar == ')') {
+                numberOpens--;
+            }
+            index++;
+        }
+        return numberOpens == 0 ? index - 1 : -1;
+    }
+
+    /**
      * method for calculating coordinates from the formulas given in the mainModel
      *
      * @return list of calculated waypoints
@@ -70,12 +157,12 @@ class Calculator {
             // initialize return list
             List<Point> list = new ArrayList<>();
 
-            List<Integer> xValues = mainModel.getXValues();
+            List<Integer> xValues = IntegerRange.getValues(context, mainModel.getXRange());
             if (xValues.size() == 0) {
                 xValues = new ArrayList<>(1);
                 xValues.add(0);
             }
-            List<Integer> yValues = mainModel.getYValues();
+            List<Integer> yValues = IntegerRange.getValues(context, mainModel.getYRange());
             if (yValues.size() == 0) {
                 yValues = new ArrayList<>(1);
                 yValues.add(0);
@@ -128,10 +215,10 @@ class Calculator {
                     coordinateEast += deltaCoordinateEast / 1850.0 / 60.0;
 
                     StringBuilder name = new StringBuilder();
-                    if (mainModel.getXValues().size() > 0) {
+                    if (IntegerRange.getValues(context, mainModel.getXRange()).size() > 0) {
                         name.append("x=").append(x);
                     }
-                    if (mainModel.getYValues().size() > 0) {
+                    if (IntegerRange.getValues(context, mainModel.getYRange()).size() > 0) {
                         if (name.length() > 0) {
                             name.append(", ");
                         }
@@ -152,95 +239,6 @@ class Calculator {
         } catch (Exception e) { // also catches RuntimeException
             throw new CalculatorException(context.getString(R.string.string_formula_error));
         }
-    }
-
-    private static DecimalFormat df = new DecimalFormat("0.##");
-
-    /**
-     * Evaluates a 'geocaching-mathematical' formula
-     * @param formula
-     * @param x
-     * @param y
-     * @return
-     */
-    public static double evaluate(String formula, Integer x, Integer y) {
-        // Check if there are any parenthesis. If so then evaluate it first and
-        // replace it with the value.
-        formula = formula.replace(" ", "");
-        int openIndex = findOpeningParenthesis(formula);
-        int closeIndex = findCosingParenthesis(formula, openIndex);
-        while (openIndex != -1 && closeIndex != -1 && openIndex < closeIndex) {
-            // Evaluate the expression within the parenthesis and replace the
-            // parenthesis-expression with the result. Repeat this until
-            // there are no more parenthesis.
-            String subFormula = formula.substring(openIndex + 1, closeIndex);
-            double value = evaluate(subFormula, x, y);
-            String replacement = df.format(value);
-            formula = formula.substring(0, openIndex) + replacement + formula.substring(closeIndex + 1);
-            openIndex = findOpeningParenthesis(formula);
-            closeIndex = findCosingParenthesis(formula, openIndex);
-        }
-
-        // for non-negative x and y do simple replacement so we support formulas like 12.34x,
-        // but don't replace "exp" as it serves as exponential function
-        final String xString = "" + x;
-        formula = formula.replaceAll("(?<!e)x(?!p)", xString);
-        final String yString = "" + y;
-        formula = formula.replace("y", yString);
-
-        return new ExpressionBuilder(formula)
-                .variables("x", "y")
-                .build()
-                .setVariable("x", x)
-                .setVariable("y", y)
-                .evaluate();
-    }
-
-    private static int findOpeningParenthesis(final String text) {
-        return findOpeningParenthesis(text, 0);
-    }
-
-    private static int findOpeningParenthesis(final String text, int startIndex) {
-        int index = text.indexOf('(', startIndex);
-        if (index == -1) {
-            return -1;
-        }
-
-        // Do not use the parenthesis if it is preceeded by a character a-w
-        // Most likely this parenthesis is used for a function call.
-        if (index > 0) {
-            char charBefore = text.charAt(index - 1);
-            if (charBefore >= 'a' && charBefore <= 'w') {
-                return findOpeningParenthesis(text, index + 1);
-            }
-        }
-        return index;
-    }
-
-    /**
-     * Search the matching closing parenthesis given a text and the position of the
-     * opening parenthesis.
-     * @param text The text
-     * @param indexOfOpenParenthesis The index of the opeing parenthesis
-     * @return The index within text of the matching closing parenthesis or -1 if there is
-     * no such closing parenthesis.
-     */
-    private static int findCosingParenthesis(final String text, final int indexOfOpenParenthesis) {
-        if (indexOfOpenParenthesis == -1) {
-            return -1;
-        }
-        int index = indexOfOpenParenthesis + 1;
-        int numberOpens = 1;
-        while (index < text.length() && numberOpens > 0) {
-            char nextChar = text.charAt(index);
-            if (nextChar == '(') {
-                numberOpens++;
-            } else if (nextChar == ')') {
-                numberOpens--;
-            }
-            index++;
-        }
-        return numberOpens == 0 ? index - 1: -1;
     }
 
     /**

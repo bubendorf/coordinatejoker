@@ -21,7 +21,6 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="0sp">
@@ -46,7 +45,6 @@
         android:padding="5sp" >
 
         <LinearLayout
-            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -57,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/string_intro"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
             <Space
                 android:layout_width="match_parent"
@@ -84,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal|center_vertical"
-                    android:inputType="text"
+                    android:inputType="textNoSuggestions"
                     android:minEms="2"
                     android:nextFocusDown="@+id/minutesNorthFormula"
                     android:text="53"
@@ -105,11 +103,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal|center_vertical"
-                    android:inputType="text"
+                    android:inputType="textNoSuggestions"
                     android:minEms="8"
                     android:nextFocusDown="@+id/degreesEastFormula"
                     android:text="12.3x4"
-                    android:textAlignment="textStart"
+                    android:textAlignment="textEnd"
                     android:textSize="18sp"
                     tools:ignore="HardcodedText,LabelFor,RtlCompat" />
 
@@ -135,7 +133,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal|center_vertical"
-                    android:inputType="text"
+                    android:inputType="textNoSuggestions"
                     android:minEms="2"
                     android:nextFocusDown="@+id/minutesEastFormula"
                     android:text="10"
@@ -156,11 +154,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal|center_vertical"
-                    android:inputType="text"
+                    android:inputType="textNoSuggestions"
                     android:minEms="8"
                     android:nextFocusDown="@+id/distanceFormula"
                     android:text="(12304+10*x)/1000.0"
-                    android:textAlignment="textStart"
+                    android:textAlignment="textEnd"
                     android:textSize="18sp"
                     tools:ignore="HardcodedText,LabelFor,RtlCompat" />
 
@@ -183,7 +181,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/string_projection"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
             <Space
                 android:layout_width="match_parent"
@@ -208,11 +206,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal|center_vertical"
-                    android:inputType="text"
+                    android:inputType="textNoSuggestions"
                     android:minEms="5"
                     android:nextFocusDown="@+id/azimuthFormula"
                     android:text="0"
-                    android:textAlignment="textStart"
+                    android:textAlignment="textEnd"
                     android:textSize="18sp"
                     tools:ignore="HardcodedText,LabelFor,RtlCompat" />
 
@@ -237,11 +235,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal|center_vertical"
-                    android:inputType="text"
+                    android:inputType="textNoSuggestions"
                     android:minEms="5"
                     android:nextFocusDown="@+id/xValues"
                     android:text="0"
-                    android:textAlignment="textStart"
+                    android:textAlignment="textEnd"
                     android:textSize="18sp"
                     tools:ignore="HardcodedText,LabelFor,RtlCompat" />
 
@@ -260,10 +258,22 @@
                 android:layout_height="5sp"
                 tools:ignore="SmallSp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:text="@string/string_range"
+                android:textSize="14sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="5sp"
+                tools:ignore="SmallSp" />
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="2">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -277,20 +287,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal|center_vertical"
-                    android:inputType="text"
+                    android:inputType="textNoSuggestions"
                     android:minEms="6"
                     android:nextFocusDown="@+id/yValues"
                     android:text="0-9"
-                    android:textAlignment="textStart"
+                    android:textAlignment="textEnd"
                     android:textSize="18sp"
                     tools:ignore="HardcodedText,LabelFor,RtlCompat" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -304,14 +307,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill_horizontal|center_vertical"
-                    android:inputType="text"
+                    android:inputType="textNoSuggestions"
                     android:minEms="6"
+                    android:nextFocusDown="@id/mainTextViewIntro"
                     android:text=""
-                    android:textAlignment="textStart"
+                    android:textAlignment="textEnd"
                     android:textSize="18sp"
                     tools:ignore="HardcodedText,LabelFor,RtlCompat" />
 
-            </LinearLayout>
+            </GridLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

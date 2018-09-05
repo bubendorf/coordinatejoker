@@ -60,6 +60,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".AboutActivity" />
         </activity>
+        <!-- acknowledgements activity -->
+        <activity
+            android:name=".AcknowledgementsActivity"
+            android:label="@string/title_activity_acknowledgements"
+            android:parentActivityName=".AboutActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AboutActivity" />
+        </activity>
         <!-- open source license activity -->
         <activity
             android:name=".OpenSourceLicensesActivity"
@@ -84,6 +94,16 @@
         <activity
             android:name=".IntroActivity"
             android:label="@string/title_activity_intro"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <!-- change history activity -->
+        <activity
+            android:name=".ChangeHistoryActivity"
+            android:label="@string/title_activity_change_history"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme">
             <meta-data

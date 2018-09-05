@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 by bubendorf <markus@bubendorf.ch>
+ * Copyright (c) 2018 by bubendorf <markus@bubendorf.ch> and siggel <siggel-apps@gmx.de>
  *
  *     This file is part of Coordinate Joker.
  *
@@ -19,6 +19,8 @@
 
 package com.github.siggel.coordinatejoker;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,10 +30,10 @@ import java.util.Set;
 /**
  * Provides a List<Integer> based on some input text.<br/>
  * The input text may look like "1,3,5,6", "1-5,7", "2-5,7-12,33-42"
- * or "1-99/2".
+ * or "1-99#2".
  * The resulting list of integers is ordered in ascending order.
  */
-public class IntegerRange {
+class IntegerRange {
 
     // Regex used to split the input text in parts.
     private static final String SPLIT_REGEX = ",";
@@ -40,67 +42,64 @@ public class IntegerRange {
     private static final char FROM_TO_CHAR = '-';
 
     // Character used to separate the step size
-    private static final char STEP_CHAR = '/';
+    private static final char STEP_CHAR = '#';
 
-    private List<Integer> values;
-    private String text;
-
-    public IntegerRange() {
-        values = Collections.emptyList();
-    }
-
-    public IntegerRange(String text) {
-        setText(text);
-    }
-
-    public void setText(String text) {
-        this.text = text;
-        Set<Integer> numbers = new HashSet<>();
-        if (text.length() > 0) {
-            String[] splits = text.split(SPLIT_REGEX);
-            for (String split : splits) {
-                String trimmedSplit = split.trim();
-                int dashIndex = trimmedSplit.indexOf(FROM_TO_CHAR);
-                if (dashIndex == 0) {
-                    throw new IllegalArgumentException("Negative numbers (" + trimmedSplit + ") are not allowed!");
-                } else if (dashIndex == -1) {
-                    // No dash found. Looks like a single number ==> take it
-                    numbers.add(Integer.parseInt(trimmedSplit));
-                } else {
-                    // A from-to range
-                    int step = 1;
-                    int from = Integer.parseInt(trimmedSplit.substring(0, dashIndex).trim());
-                    int to;
-                    int atIndex = trimmedSplit.indexOf(STEP_CHAR);
-                    if (atIndex == -1) {
-                        to = Integer.parseInt(trimmedSplit.substring(dashIndex + 1).trim());
-                    } else {
-                        to = Integer.parseInt(trimmedSplit.substring(dashIndex + 1, atIndex).trim());
-                        step = Integer.parseInt(trimmedSplit.substring(atIndex + 1).trim());
-                    }
-                    if (from > to) {
-                        throw new IllegalArgumentException("'From' must be smaller than 'to' (" + trimmedSplit + ")!");
-                    }
-                    if (step < 0) {
-                        throw new IllegalArgumentException("Negative step (" + trimmedSplit + ") is not allowed!");
-                    }
-                    // We now have the from, the to and the step and generate the single numbers.
-                    for (int num = from; num <= to; num += step) {
-                        numbers.add(num);
+    static List<Integer> getValues(Context context, String text) {
+        try {
+            text = text.trim(); // avoid string containing just blanks
+            Set<Integer> numbers = new HashSet<>();
+            if (text.length() > 0) {
+                String[] splits = text.split(SPLIT_REGEX);
+                for (String split : splits) {
+                    String trimmedSplit = split.trim();
+                    int dashIndex = trimmedSplit.indexOf(FROM_TO_CHAR);
+                    switch (dashIndex) {
+                        case 0:
+                            throw new ParseException(context != null ?
+                                    context.getString(R.string.string_parse_error_negative_number) :
+                                    "");
+                        case -1:
+                            // No dash found. Looks like a single number ==> take it
+                            numbers.add(Integer.parseInt(trimmedSplit));
+                            break;
+                        default:
+                            // A from-to range
+                            int step = 1;
+                            int from = Integer.parseInt(trimmedSplit.substring(0, dashIndex).trim());
+                            int to;
+                            int atIndex = trimmedSplit.indexOf(STEP_CHAR);
+                            if (atIndex == -1) {
+                                to = Integer.parseInt(trimmedSplit.substring(dashIndex + 1).trim());
+                            } else {
+                                to = Integer.parseInt(trimmedSplit.substring(dashIndex + 1, atIndex).trim());
+                                step = Integer.parseInt(trimmedSplit.substring(atIndex + 1).trim());
+                            }
+                            if (from > to) {
+                                throw new ParseException(context != null ?
+                                        context.getString(R.string.string_parse_error_from_bigger_than_to) :
+                                        "");
+                            }
+                            if (step < 0) {
+                                throw new ParseException(context != null ?
+                                        context.getString(R.string.string_parse_error_negative_step_size) :
+                                        "");
+                            }
+                            // We now have the from, the to and the step and generate the single numbers.
+                            for (int num = from; num <= to; num += step) {
+                                numbers.add(num);
+                            }
+                            break;
                     }
                 }
             }
+
+            List<Integer> values = new ArrayList<>(numbers);
+            Collections.sort(values);
+            return values;
+        } catch (NumberFormatException e) {
+            throw new ParseException(context != null ?
+                    context.getString(R.string.string_parse_error_non_integer) :
+                    "");
         }
-
-        values = new ArrayList<>(numbers);
-        Collections.sort(values);
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public List<Integer> getValues() {
-        return values;
     }
 }

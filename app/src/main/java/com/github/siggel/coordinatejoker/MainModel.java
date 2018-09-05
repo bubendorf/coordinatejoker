@@ -19,8 +19,6 @@
 
 package com.github.siggel.coordinatejoker;
 
-import java.util.List;
-
 /**
  * class containing formulas of the main gui
  */
@@ -35,8 +33,8 @@ class MainModel {
     private String distance; // in meter or feet
     private Boolean isFeet; // distance given in feet instead of meter
     private String azimuth; // in degrees
-    private IntegerRange xValues = new IntegerRange(); // the x values
-    private IntegerRange yValues = new IntegerRange(); // the y values
+    private String xRange; // string defining x range
+    private String yRange; // string defining y range
 
     /**
      * constructor
@@ -58,8 +56,8 @@ class MainModel {
         distance = "0";
         isFeet = false;
         azimuth = "0";
-        xValues.setText("0-9");
-        yValues.setText("");
+        xRange = "0-9";
+        yRange = "";
     }
 
     /**
@@ -68,15 +66,15 @@ class MainModel {
     void setExampleValues() {
         isNorth = true;
         degreesNorth = "53";
-        minutesNorth = "11.6y6";
+        minutesNorth = "11.6(x-3)6";
         isEast = true;
         degreesEast = "10";
-        minutesEast = "(23400+20*x)/1000";
-        distance = "100";
+        minutesEast = "23.456";
+        distance = "100+10*x";
         isFeet = false;
-        azimuth = "20*x";
-        xValues.setText("2,4,5,6");
-        yValues.setText("0-9@2");
+        azimuth = "55*y";
+        xRange = "3-9#3";
+        yRange = "0-2,9";
     }
 
 
@@ -153,28 +151,20 @@ class MainModel {
         this.azimuth = azimuth;
     }
 
-    public List<Integer> getXValues() {
-        return xValues.getValues();
+    public String getXRange() {
+        return xRange;
     }
 
-    public List<Integer> getYValues() {
-        return yValues.getValues();
+    public void setXRange(String xRange) {
+        this.xRange = xRange;
     }
 
-    public void setXText(String text) {
-        xValues.setText(text);
+    public String getYRange() {
+        return yRange;
     }
 
-    public String getXText() {
-        return xValues.getText();
-    }
-
-    public void setYText(String text) {
-        yValues.setText(text);
-    }
-
-    public String getYText() {
-        return yValues.getText();
+    public void setYRange(String yRange) {
+        this.yRange = yRange;
     }
 
 }

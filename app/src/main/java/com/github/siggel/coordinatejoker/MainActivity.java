@@ -135,7 +135,10 @@ public class MainActivity extends AppCompatActivity {
         } else if (currentVersion > previousVersion) {
             rememberVersion();
 
-            // we may display change notes here later
+            // display change notes
+            Intent intent = new Intent(this, ChangeHistoryActivity.class);
+            intent.putExtra("previousVersion", previousVersion);
+            startActivity(intent);
         }
 
 
@@ -352,13 +355,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void store() {
         final Preferences preferences = new Preferences(this);
-        try {
-            fillModelFromGui();
-        } catch (Exception e) {
-            // we should be prepared to get a ParseException here, this would be a warning, just
-            // some values won't be modified but we should store the others
-            showWarning(e.getMessage());
-        }
+        fillModelFromGui();
         preferences.saveFormulas(mainModel);
     }
 
@@ -377,8 +374,8 @@ public class MainActivity extends AppCompatActivity {
         ((EditText) findViewById(R.id.distanceFormula)).setText(mainModel.getDistance());
         ((Spinner) findViewById(R.id.spinnerUnits)).setSelection(mainModel.getFeet() ? 0 : 1);
         ((EditText) findViewById(R.id.azimuthFormula)).setText(mainModel.getAzimuth());
-        ((EditText) findViewById(R.id.xValues)).setText(mainModel.getXText());
-        ((EditText) findViewById(R.id.yValues)).setText(mainModel.getYText());
+        ((EditText) findViewById(R.id.xValues)).setText(mainModel.getXRange());
+        ((EditText) findViewById(R.id.yValues)).setText(mainModel.getYRange());
     }
 
     /**
@@ -405,12 +402,10 @@ public class MainActivity extends AppCompatActivity {
                 ((Spinner) findViewById(R.id.spinnerUnits)).getSelectedItemPosition() == 0);
         mainModel.setAzimuth(
                 ((EditText) findViewById(R.id.azimuthFormula)).getText().toString());
-        try {
-            mainModel.setXText(((EditText)findViewById(R.id.xValues)).getText().toString());
-            mainModel.setYText(((EditText)findViewById(R.id.yValues)).getText().toString());
-        } catch (Exception e) {
-            throw new ParseException(getString(R.string.string_parse_integer_exception));
-        }
+        mainModel.setXRange(
+                ((EditText) findViewById(R.id.xValues)).getText().toString());
+        mainModel.setYRange(
+                ((EditText) findViewById(R.id.yValues)).getText().toString());
     }
 
     /**
@@ -432,8 +427,10 @@ public class MainActivity extends AppCompatActivity {
         try {
             fillModelFromGui();
 
-            Integer requestedNumberOfPoints = Math.max(1, mainModel.getXValues().size()) *
-                    Math.max(1, mainModel.getYValues().size());
+            final Integer requestedNumberOfPoints = Math.max(1,
+                    IntegerRange.getValues(this, mainModel.getXRange()).size())
+                    * Math.max(1,
+                    IntegerRange.getValues(this, mainModel.getYRange()).size());
 
             // keep number of generated points in a reasonable range
             if (requestedNumberOfPoints > 100) {
@@ -468,6 +465,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 exportSettings = new ExportSettings(app);
             }
+
+            store();
 
             // export
             Exporter exporter = ExporterFactory.getExporter(this, exportSettings);
@@ -514,6 +513,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_intro:
                 startActivity(new Intent(this, IntroActivity.class));
+                break;
+            case R.id.action_change_history:
+                // intent without extra previousVersion, i.e. from the beginning
+                startActivity(new Intent(this, ChangeHistoryActivity.class));
                 break;
             case R.id.action_help:
                 startActivity(new Intent(this, HelpActivity.class));
