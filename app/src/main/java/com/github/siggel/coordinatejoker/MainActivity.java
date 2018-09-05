@@ -20,7 +20,6 @@
 package com.github.siggel.coordinatejoker;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -38,11 +37,8 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -61,10 +57,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private MainModel mainModel;
 
-    private Keyboard keyboardCoordinates;
-    private Keyboard keyboardRanges;
     private KeyboardView keyboardView;
 
+    // KeyCodes used in keyboard_xxx.xml
     public final static int CodeDelete   = -5; // Keyboard.KEYCODE_DELETE
     public final static int CodeCancel   = -3; // Keyboard.KEYCODE_CANCEL
     public final static int CodePrev     = 55000;
@@ -102,9 +97,9 @@ public class MainActivity extends AppCompatActivity {
         // programmatically add icons to buttons (as it does not work from xml for pre-Lollipop)
         Boolean useActionViewIntent = !PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(getString(R.string.key_share), false);
-        setLeftDrawableOfTextView((TextView) findViewById(R.id.resetButton),
+        setLeftDrawableOfTextView(findViewById(R.id.resetButton),
                 R.drawable.reset_icon);
-        setLeftDrawableOfTextView((TextView) findViewById(R.id.sendButton),
+        setLeftDrawableOfTextView(findViewById(R.id.sendButton),
                 useActionViewIntent ? R.drawable.view_icon : R.drawable.share_icon);
 
         // adapt button text according to configured export behavior
@@ -144,12 +139,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        KeyboardView.OnKeyboardActionListener mOnKeyboardActionListener = new KeyboardView.OnKeyboardActionListener() {
+        KeyboardView.OnKeyboardActionListener keyboardActionListener = new KeyboardView.OnKeyboardActionListener() {
             @Override public void onKey(int primaryCode, int[] keyCodes)
             {
                 // Get the EditText and its Editable
                 View focusCurrent = MainActivity.this.getWindow().getCurrentFocus();
-                if( focusCurrent==null /*|| focusCurrent.getClass()!=EditText.class*/ ) {
+                if(!(focusCurrent instanceof EditText) ) {
                     return;
                 }
                 EditText edittext = (EditText) focusCurrent;
@@ -198,32 +193,33 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override public void swipeRight() {
+                sendMessage(null);
             }
 
             @Override public void swipeUp() {
             }
         };
 
-        // Create the Keyboard
-        keyboardCoordinates = new Keyboard(this,R.xml.keyboard_coordinates);
-        keyboardRanges = new Keyboard(this,R.xml.keyboard_ranges);
+        // Create the Keyboards
+        Keyboard keyboardCoordinates = new Keyboard(this, R.xml.keyboard_coordinates);
+        Keyboard keyboardRanges = new Keyboard(this, R.xml.keyboard_ranges);
 
         // Lookup the KeyboardView
         keyboardView = findViewById(R.id.keyboardview);
 
-        // Attach the keyboard_coordinates to the view
+        // Attach the default keyboard to the view
         keyboardView.setKeyboard(keyboardCoordinates);
 
         // Do not show the preview balloons
-        //keyboardView.setPreviewEnabled(false);
+        keyboardView.setPreviewEnabled(false);
 
         // Install the key handler
-        keyboardView.setOnKeyboardActionListener(mOnKeyboardActionListener);
+        keyboardView.setOnKeyboardActionListener(keyboardActionListener);
 
-        // Hide the standard keyboard_coordinates initially
+        // Hide the standard keyboard initially
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        // Make the custom keyboard_coordinates appear
+        // Make the custom keyboard appear
         registerEditText(R.id.degreesNorthFormula, keyboardCoordinates);
         registerEditText(R.id.minutesNorthFormula, keyboardCoordinates);
         registerEditText(R.id.degreesEastFormula, keyboardCoordinates);
@@ -234,39 +230,23 @@ public class MainActivity extends AppCompatActivity {
         registerEditText(R.id.yValues, keyboardRanges);
     }
 
-    /*private void installKeyboard(int id) {
-        findViewById(id).setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override public void onFocusChange(View v, boolean hasFocus) {
-                if( hasFocus ) openKeyboard(v); else closeKeyboard();
-            }
-        });
-        findViewById(id).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                openKeyboard(v);
-            }
-        });
-    }*/
-
+    @SuppressLint("ClickableViewAccessibility")
     public void registerEditText(int resid, final Keyboard keyboard) {
-        // Find the EditText 'resid'
-        EditText edittext= (EditText)findViewById(resid);
-        // Make the custom keyboard_coordinates appear
-        edittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override public void onFocusChange(View v, boolean hasFocus) {
-                if( hasFocus ) {
-                    openKeyboard(v, keyboard);
-                } else {
-                    closeKeyboard();
-                }
-            }
-        });
-        edittext.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+        // Find the EditText
+        EditText edittext= findViewById(resid);
+
+        // Make the custom keyboard appear
+        edittext.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus) {
                 openKeyboard(v, keyboard);
+            } else {
+                closeKeyboard();
             }
         });
-        // Disable standard keyboard_coordinates hard way
-        edittext.setOnTouchListener(new View.OnTouchListener() {
+        edittext.setOnClickListener(v -> openKeyboard(v, keyboard));
+
+        // Disable standard keyboard hard way
+        /*edittext.setOnTouchListener(new View.OnTouchListener() {
             @Override public boolean onTouch(View v, MotionEvent event) {
                 EditText edittext = (EditText) v;
                 int inType = edittext.getInputType();       // Backup the input type
@@ -275,26 +255,35 @@ public class MainActivity extends AppCompatActivity {
                 edittext.setInputType(inType);              // Restore input type
                 return true; // Consume touch event
             }
-        });
+        });*/
         // Disable spell check (hex strings look like words to Android)
         edittext.setInputType( edittext.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS );
+
+        // Disable the standard keyboard
+        edittext.setShowSoftInputOnFocus(false);
     }
 
     public void openKeyboard(final View v, Keyboard keyboard)
     {
-        keyboardView.setKeyboard(keyboard);
+        if (keyboardView.getKeyboard() != keyboard) {
+            keyboardView.setKeyboard(keyboard);
+        }
         keyboardView.setVisibility(View.VISIBLE);
         keyboardView.setEnabled(true);
-        if( v!=null){
-            ((InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
-/*            v.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    InputMethodManager keyboard_coordinates = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    keyboard_coordinates.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
-            },50);*/
-        }
+/*        if(v != null){
+            // Hide the default keyboard
+            final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+            if (inputMethodManager != null) {
+                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                v.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+                },50);
+            }
+        }*/
     }
 
     public void closeKeyboard() {
@@ -488,10 +477,7 @@ public class MainActivity extends AppCompatActivity {
             // we should be prepared to get CalculatorException, ExporterException or ParseException
             // here, this would be an error resulting in no solution
             showError(e.getMessage());
-            return;
         }
-
-// We want to come back!        this.finish();
     }
 
     /**
@@ -547,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
     private void showError(String message) {
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.custom_error_toast,
-                (ViewGroup) findViewById(R.id.custom_toast_container));
+                findViewById(R.id.custom_toast_container));
 
         TextView textView = view.findViewById(R.id.text);
         textView.setText(message);
@@ -566,7 +552,7 @@ public class MainActivity extends AppCompatActivity {
     private void showWarning(String message) {
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.custom_warning_toast,
-                (ViewGroup) findViewById(R.id.custom_toast_container));
+                findViewById(R.id.custom_toast_container));
 
         TextView textView = view.findViewById(R.id.text);
         textView.setText(message);
