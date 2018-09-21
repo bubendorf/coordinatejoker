@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:horizontalGap="0px"
+    android:keyWidth="20%p"
+    android:keyHeight="10%p"
+    android:verticalGap="0px">
+    <Row android:rowEdgeFlags="top">
+        <Key android:codes="44001" android:keyLabel="abs()" />
+        <Key android:codes="44002" android:keyLabel="exp()" />
+    </Row>
+    <Row>
+        <Key android:codes="44003" android:keyLabel="floor()" />
+        <Key android:codes="44004" android:keyLabel="ceil()" />
+        <Key android:codes="44005" android:keyLabel="sqrt()" />
+    </Row>
+    <Row android:rowEdgeFlags="bottom">
+        <Key android:codes="44006" android:keyLabel="sin()" />
+        <Key android:codes="44006" android:keyLabel="cos()" />
+        <Key android:codes="44007" android:keyLabel="tan()" />
+    </Row>
+</Keyboard>

@@ -22,6 +22,7 @@ package com.github.siggel.coordinatejoker;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     public final static int CodeNext     = 55005;
     public final static int CodeClear    = 55006;
 
+    private static String[] functions = {"abs()", "exp()", "floor()", "ceil()", "sqrt()", "sin()", "cos()", "tan()"};
     /**
      * constructor
      */
@@ -169,11 +171,27 @@ public class MainActivity extends AppCompatActivity {
                 } else if( primaryCode==CodeAllRight ) {
                     edittext.setSelection(edittext.length());
                 } else if( primaryCode==CodePrev ) {
-                    @SuppressLint("WrongConstant") View focusNew= edittext.focusSearch(View.FOCUS_BACKWARD);
-                    if( focusNew!=null ) focusNew.requestFocus();
+                    if( start>0 ) {
+                        edittext.setSelection(start - 1);
+                    } else {
+                        @SuppressLint("WrongConstant") View focusNew = edittext.focusSearch(View.FOCUS_BACKWARD);
+                        if (focusNew != null) {
+                            focusNew.requestFocus();
+                        }
+                    }
                 } else if( primaryCode==CodeNext ) {
-                    @SuppressLint("WrongConstant") View focusNew= edittext.focusSearch(View.FOCUS_FORWARD);
-                    if( focusNew!=null ) focusNew.requestFocus();
+                    if (start < edittext.length()) {
+                        edittext.setSelection(start + 1);
+                    } else {
+                        @SuppressLint("WrongConstant") View focusNew = edittext.focusSearch(View.FOCUS_FORWARD);
+                        if (focusNew != null) {
+                            focusNew.requestFocus();
+                        }
+                    }
+                } else if (primaryCode >= 44000 && primaryCode <= 44099) {
+                    String func = functions[primaryCode - 44001];
+                    editable.insert(start, func);
+                    edittext.setSelection(start + func.length() - 1);
                 }  else {// Insert character
                     editable.insert(start, Character.toString((char) primaryCode));
                 }
@@ -204,14 +222,15 @@ public class MainActivity extends AppCompatActivity {
         };
 
         // Create the Keyboards
-        Keyboard keyboardCoordinates = new Keyboard(this, R.xml.keyboard_coordinates);
+        Keyboard keyboardCoords = new Keyboard(this, R.xml.keyboard_coordinates);
+        Keyboard keyboardCoordsLand = new Keyboard(this, R.xml.keyboard_coordinates_land);
         Keyboard keyboardRanges = new Keyboard(this, R.xml.keyboard_ranges);
 
         // Lookup the KeyboardView
         keyboardView = findViewById(R.id.keyboardview);
 
         // Attach the default keyboard to the view
-        keyboardView.setKeyboard(keyboardCoordinates);
+        keyboardView.setKeyboard(keyboardCoords);
 
         // Do not show the preview balloons
         keyboardView.setPreviewEnabled(false);
@@ -223,18 +242,20 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         // Make the custom keyboard appear
-        registerEditText(R.id.degreesNorthFormula, keyboardCoordinates);
-        registerEditText(R.id.minutesNorthFormula, keyboardCoordinates);
-        registerEditText(R.id.degreesEastFormula, keyboardCoordinates);
-        registerEditText(R.id.minutesEastFormula, keyboardCoordinates);
-        registerEditText(R.id.distanceFormula, keyboardCoordinates);
-        registerEditText(R.id.azimuthFormula, keyboardCoordinates);
-        registerEditText(R.id.xValues, keyboardRanges);
-        registerEditText(R.id.yValues, keyboardRanges);
+        registerEditText(R.id.degreesNorthFormula, keyboardCoords, keyboardCoordsLand);
+        registerEditText(R.id.minutesNorthFormula, keyboardCoords, keyboardCoordsLand);
+        registerEditText(R.id.degreesEastFormula, keyboardCoords, keyboardCoordsLand);
+        registerEditText(R.id.minutesEastFormula, keyboardCoords, keyboardCoordsLand);
+        registerEditText(R.id.distanceFormula, keyboardCoords, keyboardCoordsLand);
+        registerEditText(R.id.azimuthFormula, keyboardCoords, keyboardCoordsLand);
+        registerEditText(R.id.xValues, keyboardRanges, keyboardRanges);
+        registerEditText(R.id.yValues, keyboardRanges, keyboardRanges);
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    public void registerEditText(int resid, final Keyboard keyboard) {
+    public void registerEditText(int resid, final Keyboard keyboardPort, final Keyboard keyboardLand) {
+        final Keyboard keyboard = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? keyboardPort : keyboardLand;
+
         // Find the EditText
         EditText edittext= findViewById(resid);
 

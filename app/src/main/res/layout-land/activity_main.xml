@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (c) 2018 by siggel <siggel-apps@gmx.de>
+  ~
+  ~     This file is part of Coordinate Joker.
+  ~
+  ~     Coordinate Joker is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Coordinate Joker is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Coordinate Joker.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0sp">
+
+    <android.inputmethodservice.KeyboardView
+        android:id="@+id/keyboardview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="#303030"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/contentPanel"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/keyboardview"
+        android:layout_alignParentTop="true"
+        android:padding="5sp" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5sp">
+
+            <TextView
+                android:id="@+id/mainTextViewIntro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/string_intro"
+                android:textSize="14sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="5sp"
+                tools:ignore="SmallSp" />
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:columnCount="11"
+                android:rowCount="1">
+
+                <Spinner
+                    android:id="@+id/spinnerNorth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:entries="@array/stringarray_letters_latitude"
+                    android:nextFocusDown="@+id/degreesNorthFormula"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/degreesNorthFormula"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill_horizontal|center_vertical"
+                    android:inputType="textNoSuggestions"
+                    android:minEms="2"
+                    android:nextFocusDown="@+id/minutesNorthFormula"
+                    android:text="53"
+                    android:textAlignment="textEnd"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="° "
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText" />
+
+                <EditText
+                    android:id="@+id/minutesNorthFormula"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill_horizontal|center_vertical"
+                    android:inputType="textNoSuggestions"
+                    android:minEms="8"
+                    android:nextFocusDown="@+id/degreesEastFormula"
+                    android:text="12.3x4"
+                    android:textAlignment="textEnd"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="'"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText" />
+
+                <Space
+                    android:layout_width="10sp"
+                    android:layout_height="match_parent"
+                    tools:ignore="SmallSp" />
+
+                <Spinner
+                    android:id="@+id/spinnerEast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:entries="@array/stringarray_letters_longitude"
+                    android:nextFocusDown="@+id/degreesEastFormula"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/degreesEastFormula"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill_horizontal|center_vertical"
+                    android:inputType="textNoSuggestions"
+                    android:minEms="2"
+                    android:nextFocusDown="@+id/minutesEastFormula"
+                    android:text="10"
+                    android:textAlignment="textEnd"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="° "
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText" />
+
+                <EditText
+                    android:id="@+id/minutesEastFormula"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill_horizontal|center_vertical"
+                    android:inputType="textNoSuggestions"
+                    android:minEms="8"
+                    android:nextFocusDown="@+id/distanceFormula"
+                    android:text="(12304+10*x)/1000.0"
+                    android:textAlignment="textEnd"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="'"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText" />
+
+            </GridLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="5sp"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/string_projection"
+                android:textSize="14sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="5sp"
+                tools:ignore="SmallSp" />
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:columnCount="7"
+                android:rowCount="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="@string/string_distance"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/distanceFormula"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill_horizontal|center_vertical"
+                    android:inputType="textNoSuggestions"
+                    android:minEms="5"
+                    android:nextFocusDown="@+id/azimuthFormula"
+                    android:text="0"
+                    android:textAlignment="textEnd"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+
+                <Spinner
+                    android:id="@+id/spinnerUnits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:entries="@array/stringarray_distance_units"
+                    android:nextFocusDown="@+id/azimuthFormula"
+                    android:textSize="18sp" />
+
+                <Space
+                    android:layout_width="10sp"
+                    android:layout_height="match_parent"
+                    tools:ignore="SmallSp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="@string/string_azimuth"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/azimuthFormula"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill_horizontal|center_vertical"
+                    android:inputType="textNoSuggestions"
+                    android:minEms="5"
+                    android:nextFocusDown="@+id/xValues"
+                    android:text="0"
+                    android:textAlignment="textEnd"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="° TN"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText" />
+
+            </GridLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="5sp"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/string_range"
+                android:textSize="14sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="5sp"
+                tools:ignore="SmallSp" />
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:columnCount="5"
+                android:rowCount="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="@string/string_x_values"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/xValues"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill_horizontal|center_vertical"
+                    android:inputType="textNoSuggestions"
+                    android:minEms="6"
+                    android:nextFocusDown="@+id/yValues"
+                    android:text="0-9"
+                    android:textAlignment="textEnd"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+
+                <Space
+                    android:layout_width="10sp"
+                    android:layout_height="match_parent"
+                    tools:ignore="SmallSp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="@string/string_y_values"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/yValues"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill_horizontal|center_vertical"
+                    android:inputType="textNoSuggestions"
+                    android:minEms="6"
+                    android:nextFocusDown="@id/mainTextViewIntro"
+                    android:text=""
+                    android:textAlignment="textEnd"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+
+            </GridLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/resetButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="5sp"
+                android:onClick="resetFields"
+                android:text="@string/string_reset"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/sendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="5sp"
+                android:onClick="sendMessage"
+                android:text="@string/string_send"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>
+

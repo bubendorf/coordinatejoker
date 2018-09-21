@@ -30,7 +30,7 @@
     </Row>
 
     <Row>
-        <Key android:codes="-3"    android:keyIcon="@drawable/sym_keyboard_done" android:horizontalGap="2%p" android:keyEdgeFlags="left"/>
+        <Key android:codes="0"    android:keyLabel="f(x)" android:popupKeyboard="@xml/popup_functions" android:horizontalGap="2%p" android:keyEdgeFlags="left"/>
         <Key android:codes="55000" android:keyIcon="@drawable/sym_keyboard_previous_lxx_dark" android:horizontalGap="2%p" />
         <Key android:codes="32"    android:keyIcon="@drawable/sym_keyboard_space" android:horizontalGap="4%p"  />
         <Key android:codes="48"    android:keyLabel="0" android:horizontalGap="2%p" />
