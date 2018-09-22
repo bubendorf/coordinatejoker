@@ -48,7 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="5sp">
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp">
 
             <TextView
                 android:id="@+id/mainTextViewIntro"
@@ -56,11 +57,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/string_intro"
                 android:textSize="14sp" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="5sp"
-                tools:ignore="SmallSp" />
 
             <GridLayout
                 android:layout_width="wrap_content"
@@ -118,11 +114,13 @@
                     android:text="'"
                     android:textSize="18sp"
                     tools:ignore="HardcodedText" />
+            </GridLayout>
 
-                <Space
-                    android:layout_width="10sp"
-                    android:layout_height="match_parent"
-                    tools:ignore="SmallSp" />
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:columnCount="11"
+                android:rowCount="1">
 
                 <Spinner
                     android:id="@+id/spinnerEast"
@@ -188,11 +186,6 @@
                 android:text="@string/string_projection"
                 android:textSize="14sp" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="5sp"
-                tools:ignore="SmallSp" />
-
             <GridLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -229,7 +222,7 @@
                     android:textSize="18sp" />
 
                 <Space
-                    android:layout_width="10sp"
+                    android:layout_width="27sp"
                     android:layout_height="match_parent"
                     tools:ignore="SmallSp" />
 
@@ -274,11 +267,6 @@
                 android:text="@string/string_range"
                 android:textSize="14sp" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="5sp"
-                tools:ignore="SmallSp" />
-
             <GridLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -306,7 +294,7 @@
                     tools:ignore="HardcodedText,LabelFor,RtlCompat" />
 
                 <Space
-                    android:layout_width="10sp"
+                    android:layout_width="88sp"
                     android:layout_height="match_parent"
                     tools:ignore="SmallSp" />
 
@@ -332,35 +320,35 @@
 
             </GridLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/resetButton"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawablePadding="5sp"
-                android:onClick="resetFields"
-                android:text="@string/string_reset"
-                android:textSize="18sp" />
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/sendButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="5sp"
-                android:onClick="sendMessage"
-                android:text="@string/string_send"
-                android:textSize="18sp" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
 
-        </LinearLayout>
+                <Button
+                    android:id="@+id/resetButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="5sp"
+                    android:onClick="resetFields"
+                    android:text="@string/string_reset"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/sendButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="5sp"
+                    android:onClick="sendMessage"
+                    android:text="@string/string_send"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

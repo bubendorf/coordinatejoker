@@ -20,6 +20,7 @@
 package com.github.siggel.coordinatejoker;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -38,8 +39,10 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -225,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
         Keyboard keyboardCoords = new Keyboard(this, R.xml.keyboard_coordinates);
         Keyboard keyboardCoordsLand = new Keyboard(this, R.xml.keyboard_coordinates_land);
         Keyboard keyboardRanges = new Keyboard(this, R.xml.keyboard_ranges);
+        Keyboard keyboardRangesLand = new Keyboard(this, R.xml.keyboard_ranges_land);
 
         // Lookup the KeyboardView
         keyboardView = findViewById(R.id.keyboardview);
@@ -248,8 +252,8 @@ public class MainActivity extends AppCompatActivity {
         registerEditText(R.id.minutesEastFormula, keyboardCoords, keyboardCoordsLand);
         registerEditText(R.id.distanceFormula, keyboardCoords, keyboardCoordsLand);
         registerEditText(R.id.azimuthFormula, keyboardCoords, keyboardCoordsLand);
-        registerEditText(R.id.xValues, keyboardRanges, keyboardRanges);
-        registerEditText(R.id.yValues, keyboardRanges, keyboardRanges);
+        registerEditText(R.id.xValues, keyboardRanges, keyboardRangesLand);
+        registerEditText(R.id.yValues, keyboardRanges, keyboardRangesLand);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -269,22 +273,25 @@ public class MainActivity extends AppCompatActivity {
         });
         edittext.setOnClickListener(v -> openKeyboard(v, keyboard));
 
-        // Disable standard keyboard hard way
-        /*edittext.setOnTouchListener(new View.OnTouchListener() {
-            @Override public boolean onTouch(View v, MotionEvent event) {
-                EditText edittext = (EditText) v;
-                int inType = edittext.getInputType();       // Backup the input type
-                edittext.setInputType(InputType.TYPE_NULL); // Disable standard keyboard_coordinates
-                edittext.onTouchEvent(event);               // Call native handler
-                edittext.setInputType(inType);              // Restore input type
-                return true; // Consume touch event
-            }
-        });*/
-        // Disable spell check (hex strings look like words to Android)
+        // Disable spell check
         edittext.setInputType( edittext.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS );
 
-        // Disable the standard keyboard
-        edittext.setShowSoftInputOnFocus(false);
+        if(Build.VERSION.SDK_INT >= 21 ) {
+            // Disable the standard keyboard
+            edittext.setShowSoftInputOnFocus(false);
+        } else {
+            // Disable standard keyboard hard way
+            edittext.setOnTouchListener(new View.OnTouchListener() {
+                @Override public boolean onTouch(View v, MotionEvent event) {
+                    EditText edittext = (EditText) v;
+                    int inType = edittext.getInputType();       // Backup the input type
+                    edittext.setInputType(InputType.TYPE_NULL); // Disable standard keyboard_coordinates
+                    edittext.onTouchEvent(event);               // Call native handler
+                    edittext.setInputType(inType);              // Restore input type
+                    return true; // Consume touch event
+                }
+            });
+        }
     }
 
     public void openKeyboard(final View v, Keyboard keyboard)
@@ -294,20 +301,22 @@ public class MainActivity extends AppCompatActivity {
         }
         keyboardView.setVisibility(View.VISIBLE);
         keyboardView.setEnabled(true);
-/*        if(v != null){
-            // Hide the default keyboard
-            final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-            if (inputMethodManager != null) {
-                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        if(Build.VERSION.SDK_INT < 21 ) {
+            if(v != null){
+                // Hide the default keyboard
+                final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                if (inputMethodManager != null) {
+                    inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-                v.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    }
-                },50);
+                    v.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        }
+                    },50);
+                }
             }
-        }*/
+        }
     }
 
     public void closeKeyboard() {
