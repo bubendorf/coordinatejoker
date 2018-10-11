@@ -158,11 +158,18 @@ public class MainActivity extends AppCompatActivity {
                 EditText edittext = (EditText) focusCurrent;
                 Editable editable = edittext.getText();
                 int start = edittext.getSelectionStart();
+                int end = edittext.getSelectionEnd();
                 // Handle key
                 if( primaryCode==CodeCancel ) {
                     closeKeyboard();
                 } else if( primaryCode==CodeDelete ) {
-                    if( editable!=null && start>0 ) editable.delete(start - 1, start);
+                    if (editable!=null) {
+                        if (start != end) {
+                            editable.delete(start, end);
+                        } else if (start > 0) {
+                            editable.delete(start - 1, start);
+                        }
+                    }
                 } else if( primaryCode==CodeClear ) {
                     if( editable!=null ) editable.clear();
                 } else if( primaryCode==CodeLeft ) {
@@ -183,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 } else if( primaryCode==CodeNext ) {
-                    if (start < edittext.length()) {
-                        edittext.setSelection(start + 1);
+                    if (end < edittext.length()) {
+                        edittext.setSelection(end + 1);
                     } else {
                         @SuppressLint("WrongConstant") View focusNew = edittext.focusSearch(View.FOCUS_FORWARD);
                         if (focusNew != null) {
@@ -192,10 +199,16 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 } else if (primaryCode >= 44000 && primaryCode <= 44099) {
+                    if (start != end) {
+                        editable.delete(start, end);
+                    }
                     String func = functions[primaryCode - 44001];
                     editable.insert(start, func);
                     edittext.setSelection(start + func.length() - 1);
                 }  else {// Insert character
+                    if (start != end) {
+                        editable.delete(start, end);
+                    }
                     editable.insert(start, Character.toString((char) primaryCode));
                 }
             }
