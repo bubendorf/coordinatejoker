@@ -54,7 +54,7 @@
                 android:id="@+id/mainTextViewIntro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/string_intro"
+                android:text=""
                 android:textSize="14sp" />
 
             <Space
@@ -88,7 +88,7 @@
                     android:text="53"
                     android:textAlignment="textEnd"
                     android:textSize="18sp"
-                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+                    tools:ignore="Autofill,HardcodedText,LabelFor,RtlCompat" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -109,7 +109,7 @@
                     android:text="12.3x4"
                     android:textAlignment="textEnd"
                     android:textSize="18sp"
-                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+                    tools:ignore="Autofill,HardcodedText,LabelFor,RtlCompat" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -139,7 +139,7 @@
                     android:text="10"
                     android:textAlignment="textEnd"
                     android:textSize="18sp"
-                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+                    tools:ignore="Autofill,HardcodedText,LabelFor,RtlCompat" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -160,7 +160,7 @@
                     android:text="(12304+10*x)/1000.0"
                     android:textAlignment="textEnd"
                     android:textSize="18sp"
-                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+                    tools:ignore="Autofill,HardcodedText,LabelFor,RtlCompat" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -212,7 +212,7 @@
                     android:text="0"
                     android:textAlignment="textEnd"
                     android:textSize="18sp"
-                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+                    tools:ignore="Autofill,HardcodedText,LabelFor,RtlCompat" />
 
                 <Spinner
                     android:id="@+id/spinnerUnits"
@@ -241,7 +241,7 @@
                     android:text="0"
                     android:textAlignment="textEnd"
                     android:textSize="18sp"
-                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+                    tools:ignore="Autofill,HardcodedText,LabelFor,RtlCompat" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -293,7 +293,7 @@
                     android:text="0-9"
                     android:textAlignment="textEnd"
                     android:textSize="18sp"
-                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+                    tools:ignore="Autofill,HardcodedText,LabelFor,RtlCompat" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -313,7 +313,7 @@
                     android:text=""
                     android:textAlignment="textEnd"
                     android:textSize="18sp"
-                    tools:ignore="HardcodedText,LabelFor,RtlCompat" />
+                    tools:ignore="Autofill,HardcodedText,LabelFor,RtlCompat" />
 
             </GridLayout>
 

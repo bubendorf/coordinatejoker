@@ -41,10 +41,11 @@ public class ChangeHistoryActivity extends VersatileWebViewActivity {
         super.onCreate(savedInstanceState);
 
         final Intent intent = getIntent();
+        final int currentVersion = intent.getIntExtra("currentVersion", 0);
         final int previousVersion = intent.getIntExtra("previousVersion", 0);
         boolean haveNothingToShow = true;
 
-        StringBuilder html = new StringBuilder("");
+        StringBuilder html = new StringBuilder();
 
         // header
         try {
@@ -55,26 +56,16 @@ public class ChangeHistoryActivity extends VersatileWebViewActivity {
             // ignore
         }
 
-        // add relevant change notes
-        if (previousVersion < 15) {
-            try {
-                html.append(FileHelper.readContentFromInputStream(
-                        getAssets().open("changes_version_15_" +
-                                getString(R.string.string_html_page_language_id) + ".html")));
-                haveNothingToShow = false;
-            } catch (IOException e) {
-                // ignore
-            }
-        }
+        for (int version = currentVersion; version > previousVersion; --version) {
 
-        if (previousVersion < 14) {
+            // add relevant change notes
             try {
                 html.append(FileHelper.readContentFromInputStream(
-                        getAssets().open("changes_version_14_and_before_" +
+                        getAssets().open("changes_version_" + version + "_" +
                                 getString(R.string.string_html_page_language_id) + ".html")));
                 haveNothingToShow = false;
             } catch (IOException e) {
-                // ignore
+                // ignore not existing files
             }
         }
 

@@ -21,6 +21,7 @@
     <string name="title_app_name">Coordinate Joker</string>
     <string name="title_settings">Einstellungen</string>
     <string name="title_activity_help">Hilfe</string>
+    <string name="title_activity_import">Import aus Zwischenablage</string>
     <string name="title_activity_open_source_licenses">Open Source Lizenzen</string>
     <string-array name="stringarray_letters_latitude">
         <item>"N"</item>    <!-- first entry is considered north to become language independent -->
@@ -36,7 +37,7 @@
     <string name="string_projection">Einheit \"m\" oder \"ft\" einstellen, nutze Distanz \"0\", um keine Projektion durchzuführen:</string>
     <string name="string_distance">Distanz: </string>
     <string name="string_azimuth">Winkel: </string>
-    <string name="string_intro" tools:ignore="TypographyDashes">Formeln mit x, y als Unbekannten eingeben, z.B. \"12.(3+x)4y\":</string>
+    <string name="htmlstring_intro"><![CDATA[Formeln mit x, y als Unbekannten eingeben, z.B. "12.(3+x)4y", oder aus der Zwischenablage <a href="coordinatejoker_import://">importieren</a>.]]></string>
     <string name="string_reset">Löschen</string>
     <string name="string_formula_error">Die Formeln konnten nicht gelöst werden. Bitte überprüfe sie auf Fehler.</string>
     <string name="string_gpx_export_failed">Speichern der gpx-Datei fehlgeschlagen.</string>
@@ -62,15 +63,25 @@
     <string name="string_intro_button_ok">OK</string>
     <string name="htmlstring_intro_select_app_for_send_gpx">Wenn Coordinate Joker für die Verwendung von c:geo konfiguriert ist, dies aber nicht gefunden wird, muss eine alternative App manuell aus den Vorschlägen von Android ausgewählt werden.</string>
     <string name="htmlstring_intro_locus_import">Locus wird fragen, wohin die Punkte importiert werden sollen. Es empfiehlt sich, ein eigenes Verzeichnis \'joker\' anzulegen, um die Punkte später schneller gesammelt ausblenden oder löschen zu können.</string>
-    <string name="htmlstring_intro_other_apps_import">Wenn du c:geo verwendest, wirst Du gefragt, wohin die Punkte importiert werden sollen. Es empfiehlt sich, ein eigenes Verzeichnis \'joker\' anzulegen, um die Punkte später schneller gesammelt ausblenden oder löschen zu können.</string>
+    <string name="htmlstring_intro_other_apps_import">Wenn Du c:geo verwendest, wirst Du gefragt, wohin die Punkte importiert werden sollen. Es empfiehlt sich, ein eigenes Verzeichnis \'joker\' anzulegen, um die Punkte später schneller gesammelt ausblenden oder löschen zu können.</string>
     <string name="htmlstring_intro_locus_shows_points"><![CDATA[Locus stellt die Punkte nun auf der Karte dar, so dass Du schnell feststellen kannst, welche Punkte einen Besuch lohnen.<br><br><b>Viel Erfolg!</b><br>]]></string>
     <string name="htmlstring_intro_other_app_shows_points"><![CDATA[Du kannst Dir dann die Punkte auf der Karte anzeigen lassen, so dass Du schnell feststellen kannst, welche Punkte einen Besuch lohnen.<br><br><b>Viel Erfolg!</b><br>]]></string>
     <string name="string_screenshot">Screenshot</string>
     <string name="string_parse_error_negative_number">Negative Zahlen werden in der Wertebereich-Definition nicht unterstützt.</string>
     <string name="string_parse_error_from_bigger_than_to">\'Von\' muss kleiner als \'bis\' sein bei der Wertebereich-Definition.</string>
     <string name="string_parse_error_negative_step_size">Negative Schrittweiten sind in der Wertebereich-Definition nicht erlaubt.</string>
-    <string name="string_parse_error_non_integer">Die Syntax der Wertebereich-Definition ist falsch, bitte nutze die Hilfe.</string>
+    <string name="string_parse_error_non_integer">Bitte korrigiere die Wertebereich-Definition.</string>
     <string name="title_activity_change_history">Änderungshistorie</string>
     <string name="htmlstring_no_change_history_found">Keine Änderungshistorie gefunden.</string>
     <string name="string_range" tools:ignore="TypographyDashes">Wertebereich im Format \"1-5#2,7-9,20\" eingeben (\"#2\" für Schrittweite 2) oder leer lassen:</string>
+    <string name="string_import_explanation">Bring die Formel auf folgendes Format: N …° …\' E …° …\' …m …° TN (oder ft statt m, die Projektion kann auch weggelassen werden). Zeilenumbrüche statt °, \' sind zulässig. Abschließend ersetze die Unbekannten durch x (und y).</string>
+    <string name="string_import_result_explanation">Ergebnis:</string>
+    <string name="string_use">Verwenden</string>
+    <string name="string_cancel">Abbrechen</string>
+    <string name="string_replacement_info">mit Ersetzung</string>
+    <string name="string_no_replacement_info">Die Variablen konnten nicht automatisch zu x, y angepasst werden. Bitte passe sie ggf. oben manuell an.</string>
+    <string name="string_error_big_clipboard">Die Zwischenablage enthält zu viele Daten für die Analyse. Bitte kopiere nur die Formel in die Zwischenablage.</string>
+    <string name="string_error_clipboard_failed">Der Import aus der Zwischenablage ist fehlgeschlagen. Du kannst aber versuchen, sie hier manuell einzufügen.</string>
+    <string name="string_import_projection">Proj.</string>
+    <string name="string_x_used_for_multiplication">x als Malzeichen</string>
 </resources>

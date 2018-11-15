@@ -34,15 +34,14 @@ import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
-import android.text.Editable;
-import android.text.InputType;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -96,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
         // load formulas and settingsModel on create
         this.restore();
 
+        // set text from html again to support links
+        ((TextView) findViewById(R.id.mainTextViewIntro)).setText(Html.fromHtml(getString(R.string.htmlstring_intro)));
+        ((TextView) findViewById(R.id.mainTextViewIntro)).setMovementMethod(LinkMovementMethod.getInstance());
+
         // set focus to top left element (except North/South selector)
         findViewById(R.id.degreesNorthFormula).requestFocus();
 
@@ -142,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
             // display change notes
             Intent intent = new Intent(this, ChangeHistoryActivity.class);
+            intent.putExtra("currentVersion", currentVersion);
             intent.putExtra("previousVersion", previousVersion);
             startActivity(intent);
         }
@@ -559,7 +563,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_change_history:
                 // intent without extra previousVersion, i.e. from the beginning
-                startActivity(new Intent(this, ChangeHistoryActivity.class));
+                Intent intent = new Intent(this, ChangeHistoryActivity.class);
+                intent.putExtra("currentVersion", getCurrentVersion());
+                startActivity(intent);
                 break;
             case R.id.action_help:
                 startActivity(new Intent(this, HelpActivity.class));
