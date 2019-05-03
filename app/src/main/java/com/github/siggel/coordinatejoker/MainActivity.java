@@ -188,7 +188,9 @@ public class MainActivity extends AppCompatActivity {
                 } else if( primaryCode==CodeAllRight ) {
                     edittext.setSelection(edittext.length());
                 } else if( primaryCode==CodePrev ) {
-                    if( start>0 ) {
+                    if (start < end) {
+                        edittext.setSelection(start);
+                    } else if( start > 0) {
                         edittext.setSelection(start - 1);
                     } else {
                         @SuppressLint("WrongConstant") View focusNew = edittext.focusSearch(View.FOCUS_BACKWARD);
@@ -197,7 +199,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 } else if( primaryCode==CodeNext ) {
-                    if (end < edittext.length()) {
+                    if (start < end) {
+                        edittext.setSelection(end);
+                    } else if (end < edittext.length()) {
                         edittext.setSelection(end + 1);
                     } else {
                         @SuppressLint("WrongConstant") View focusNew = edittext.focusSearch(View.FOCUS_FORWARD);
