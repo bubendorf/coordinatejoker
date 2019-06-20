@@ -43,7 +43,7 @@
     <string name="string_gpx_export_failed">Speichern der gpx-Datei fehlgeschlagen.</string>
     <string name="string_kml_export_failed">Speichern der kml-Datei fehlgeschlagen.</string>
     <string name="string_kmz_export_failed">Speichern der kmz-Datei fehlgeschlagen.</string>
-    <string name="string_exporter_missing">Keine Implementierung gefunden für ein Speichern nach </string>
+    <string name="string_exporter_missing">Keine Implementierung gefunden für ein Speichern ins Format</string>
     <string name="string_sending_intent_failed">Das Senden der Wegpunkte an die App zur Darstellung ist fehlgeschlagen.</string>
     <string name="string_empty_waypoints">Die Berechnung hat leider keine gültigen Koordinaten ergeben.</string>
     <string name="string_some_invalid_waypoints">Nicht alle Berechnungen ergaben gültige Koordinaten.</string>
@@ -84,4 +84,5 @@
     <string name="string_error_clipboard_failed">Der Import aus der Zwischenablage ist fehlgeschlagen. Du kannst aber versuchen, sie hier manuell einzufügen.</string>
     <string name="string_import_projection">Proj.</string>
     <string name="string_x_used_for_multiplication">x als Malzeichen</string>
+    <string name="string_error_parsing_failed">Die Eingabezeile konnte nicht analysiert werden.</string>
 </resources>
