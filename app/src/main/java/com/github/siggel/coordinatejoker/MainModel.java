@@ -132,7 +132,7 @@ class MainModel {
     }
 
     void setDistance(String distance) {
-        this.distance = distance;
+        this.distance = distance == null || distance.length() == 0 ? "0" : distance;
     }
 
     Boolean getFeet() {
@@ -148,7 +148,7 @@ class MainModel {
     }
 
     void setAzimuth(String azimuth) {
-        this.azimuth = azimuth;
+        this.azimuth = azimuth == null || azimuth.length() == 0 ? "0" : azimuth;
     }
 
     public String getXRange() {
