@@ -52,6 +52,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * class for showing main application page
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.degreesNorthFormula).requestFocus();
 
         // programmatically add icons to buttons (as it does not work from xml for pre-Lollipop)
-        Boolean useActionViewIntent = !PreferenceManager.getDefaultSharedPreferences(this)
+        boolean useActionViewIntent = !PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(getString(R.string.key_share), false);
         setLeftDrawableOfTextView(findViewById(R.id.resetButton),
                 R.drawable.reset_icon);
@@ -128,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
         int currentVersion = getCurrentVersion();
         int previousVersion = getPreviousVersion();
 
-        //noinspection StatementWithEmptyBody
         if (previousVersion < 13) {
             // very first startup
 
@@ -481,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             fillModelFromGui();
 
-            final Integer requestedNumberOfPoints = Math.max(1,
+            final int requestedNumberOfPoints = Math.max(1,
                     IntegerRange.getValues(this, mainModel.getXRange()).size())
                     * Math.max(1,
                     IntegerRange.getValues(this, mainModel.getYRange()).size());
@@ -507,9 +507,9 @@ public class MainActivity extends AppCompatActivity {
 
             // determine export format from preferences
             ExportSettings exportSettings = new ExportSettings();
-            String app = PreferenceManager.getDefaultSharedPreferences(this)
-                    .getString(getString(R.string.key_use_with), "locus");
-            if (app.equals("expert")) {
+            String app = Objects.requireNonNull(PreferenceManager.getDefaultSharedPreferences(this)
+                    .getString(getString(R.string.key_use_with), "locus"));
+            if ("expert".equals(app)) {
                 exportSettings.setWantsToShare(PreferenceManager.getDefaultSharedPreferences(this)
                         .getBoolean(getString(R.string.key_share), false));
                 exportSettings.setUseMimeType(PreferenceManager.getDefaultSharedPreferences(this)
